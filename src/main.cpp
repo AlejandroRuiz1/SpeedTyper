@@ -1,55 +1,41 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include <algorithm>
-#include <random>
-#include <chrono>
-#include <sstream>
-
 #include "SpeedTyperTest.hpp"
 #include "WordBank.hpp"
+#include "UserInterface.hpp"
+#include "Utilities.hpp"
 
-/*
-* @param words - vector<string>& : reference to words vector
-* @param wordCount - int : Specifies number of words needed to generate sentence
-* @return string : Sentence generated for typing test
-*/
-std::string generateSentence(const std::vector<std::string>& words, int wordCount) {
-    std::ostringstream sentence;
-    for (int i = 0; i < wordCount; ++i) {
-        if (i != 0) sentence << " ";
-        sentence << words[i];
-    }
-    return sentence.str();
-}
-
-// Greets users, lets them proceed or quit test
-int greet() {
-    std::cout << "Hello, and Welcome to SpeedTyper!\n";
-    std::cout << "\nYou will be pushed to your absolute limits...\n";
-    std::cout << "Are you ready? (y/n): ";
-    
-    char response{};
-    std::cin >> response; 
-    if (response == 'n') {
-        std::cout << "Oh well... Come back another time.\n";
-        return 1;
-    }
-
-    return 0;
-}
-
-
+#include <iostream>
 
 int main() {
-    int greeting {greet()};
+    int greeting {UserInterface::greetUser()};
     if (!greeting) return 0; // User not ready to be pushed to their absolute limits
+    
     const std::string filename {"../wordbank.txt"};
-    std::vector<std::string> words = loadWords(filename);
 
-    int wordCount = 25;
-    speedTyperTest(words, wordCount);
+    try {
+        WordBank wordBank(filename);
+        wordBank.loadWords();
+        wordBank.shuffleWords();
+
+
+        // Running SpeedTyperTest
+        int wordCount = 10;
+        SpeedTyperTest speedTyper(wordBank, wordCount);
+        speedTyper.startTest();
+
+        // Calculate results
+        double wpm = speedTyper.calculateWPM();
+        double accuracy = speedTyper.calculateAccuracy();
+
+        // Present results to user
+        UserInterface::displayResults(
+            speedTyper,
+            wpm,
+            accuracy,
+            wordCount
+        );
+    } catch (const std::exception& e) {
+        std::cerr << e.what() << '\n';
+    }
 
     return 0;
 }

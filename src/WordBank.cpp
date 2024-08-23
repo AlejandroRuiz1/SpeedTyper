@@ -1,8 +1,10 @@
 #include "WordBank.hpp"
+
 #include <fstream>
 #include <algorithm>
 #include <random>
 #include <stdexcept>
+#include <sstream>
 
 WordBank::WordBank(const std::string& filename) : filename_(filename) {}
 
@@ -32,4 +34,17 @@ void WordBank::shuffleWords() {
 
 std::string WordBank::getWord(int index) const {
     return words_.at(index);
+}
+
+/*
+* @param wordCount - int : Specifies number of words needed to generate sentence
+* @return string : Sentence generated for typing test
+*/
+std::string WordBank::generateSentence(int wordCount) const {
+    std::ostringstream sentence;
+    for (int i = 0; i < wordCount; ++i) {
+        if (i != 0) sentence << " ";
+        sentence << words_[i];
+    }
+    return sentence.str();
 }

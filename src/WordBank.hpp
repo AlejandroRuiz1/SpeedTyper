@@ -10,10 +10,11 @@ class WordBank {
         void loadWords();
         void shuffleWords();
         std::string getWord(int index) const;
+        std::string generateSentence(int wordCount) const;
 
     private:
-    std::vector<std::string> words_;
-    std::string filename_;
+        std::vector<std::string> words_;
+        std::string filename_;
 };
 
 #endif

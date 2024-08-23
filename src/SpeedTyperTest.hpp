@@ -9,12 +9,17 @@ public:
     void startTest();
     double calculateWPM() const;
     double calculateAccuracy() const;
+    double getElapsedTime() const;
+    int getCorrectWords() const;
 
 private:
     const WordBank& wordBank_;
+    void countCorrectWords_(const std::string &sentence, const std::string &userSentence);
     int wordCount_;
     int correctWords_;
     double elapsedTime_;
+    std::string sentence_;
+    std::string userInputSentence_;
 };
 
 #endif
